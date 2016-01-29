@@ -7,7 +7,7 @@ using System.Linq;
 public class ObjectValueComparison
 {
     /// <summary>
-    /// This is a type comparison between any two objects.  This works
+    /// This is a value type comparison between any two objects.  This works
     /// with nested objects and collections of nested objects and so forth.  The order of objects
     /// in any lists DO matter.
     /// </summary>
