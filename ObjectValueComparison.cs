@@ -12,8 +12,8 @@ public class ObjectValueComparison
     /// in any lists DO matter.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="a"></param>
-    /// <param name="b"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
     /// <param name="ignoreCase">Optional parameter for string comparisons</param>
     /// <returns></returns>
     public static bool AreEqual<T>(T x, T y, bool ignoreCase = true)
@@ -23,12 +23,12 @@ public class ObjectValueComparison
 
     private static bool PropertiesAreEqual<T>(T x, T y, bool ignoreCase)
     {
-        //check if xis null and y isn't null or the reverse
+        //check if x is null and y isn't null or the reverse
         if ((x == null && y != null) || (x != null && y == null))
         {
             return false;
         }
-        else if (x== null && y == null) // check if xand y are both null
+        else if (x == null && y == null) // check if xand y are both null
         {
             return true;
         }
@@ -36,7 +36,7 @@ public class ObjectValueComparison
         Type xType = x.GetType();
         Type yType = y.GetType();
 
-        if (xType.IsPrimitive || x is string) //Easy case if it's xprimitive
+        if ((xType.IsPrimitive && yType.IsPrimitive) || (x is string && y is string)) //Easy case
         {
             return valueTest(x, y, ignoreCase);
         }
@@ -56,7 +56,7 @@ public class ObjectValueComparison
             var yElements = yValue as IList;
 
             //Checking to see what kind of values we have
-            if (xElements != null)  //Checking if we have xIlist
+            if (xElements != null)  //Checking if we have a Ilist
             {
                 for (var element = 0; element < xElements.Count; element++)
                 {
@@ -70,7 +70,7 @@ public class ObjectValueComparison
             {
                 continue;
             }
-            else if ((xProp.PropertyType.IsPrimitive && yProp.PropertyType.IsPrimitive) || (xProp.PropertyType.IsValueType && yProp.PropertyType.IsValueType)) //Check to see if we have xprimitive or value type
+            else if ((xProp.PropertyType.IsPrimitive && yProp.PropertyType.IsPrimitive) || (xProp.PropertyType.IsValueType && yProp.PropertyType.IsValueType)) //Check to see if we have a primitive or value type
             {
                 if (!valueTest(xValue, yValue, ignoreCase))
                 {
@@ -79,12 +79,12 @@ public class ObjectValueComparison
             }
             else if (typeof(IEnumerable).IsAssignableFrom(xProp.PropertyType))  //Tries to see if we can assign to xEnumerable
             {
-                if (xElements.Count != yElements.Count)
+                if (xElements.Count != yElements.Count)//Make sure both Enumerables are same length
                 {
                     return false;
                 }
 
-                for (var i = 0; i < xElements.Count; i++)
+                for (var i = 0; i < xElements.Count; i++)//Iterate through both Enumerables, comparing each item
                 {
                     if (!PropertiesAreEqual(xElements[i], yElements[i], ignoreCase))
                     {
