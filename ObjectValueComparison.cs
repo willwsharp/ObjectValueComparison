@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Reflection;
 
 public class ObjectValueComparison
 {
@@ -49,8 +49,8 @@ public class ObjectValueComparison
             var xProp = xProperties[property];
             var yProp = yProperties[property];
 
-            object xValue = xProp.GetValue(a, null);
-            object yValue = yProp.GetValue(b, null);
+            object xValue = xProp.GetValue(x, null);
+            object yValue = yProp.GetValue(y, null);
 
             var xElements = xValue as IList;
             var yElements = yValue as IList;
@@ -70,7 +70,7 @@ public class ObjectValueComparison
             {
                 continue;
             }
-            else if ((xProp.PropertyType.IsPrimitive && yProp.PropertyType.IsPrimitive) || (xProp.PropertyType.IsValueType && yProp.PropertyType.IsValueType)) //Check to see if we have a primitive or value type
+            else if (canBeCompared(xProp, yProp) || (xValue is string && yValue is string)) //Check to see if we have a primitive or value type
             {
                 if (!valueTest(xValue, yValue, ignoreCase))
                 {
@@ -126,6 +126,11 @@ public class ObjectValueComparison
         }
 
         return EqualityComparer<T>.Default.Equals(x, y);
+    }
+
+    private static bool canBeCompared(PropertyInfo x, PropertyInfo y)
+    {
+        return (x.PropertyType.IsPrimitive && y.PropertyType.IsPrimitive) || (x.PropertyType.IsValueType && y.PropertyType.IsValueType);
     }
 }
 
