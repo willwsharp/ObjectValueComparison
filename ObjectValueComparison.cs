@@ -77,21 +77,6 @@ public class ObjectValueComparison
                     return false;
                 }
             }
-            else if (typeof(IEnumerable).IsAssignableFrom(xProp.PropertyType))  //Tries to see if we can assign to xEnumerable
-            {
-                if (xElements.Count != yElements.Count)//Make sure both Enumerables are same length
-                {
-                    return false;
-                }
-
-                for (var i = 0; i < xElements.Count; i++)//Iterate through both Enumerables, comparing each item
-                {
-                    if (!PropertiesAreEqual(xElements[i], yElements[i], ignoreCase))
-                    {
-                        return false;
-                    }
-                }
-            }
             else //Must be another object, recurse into said object
             {
                 {
